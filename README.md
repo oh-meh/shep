@@ -191,7 +191,12 @@ For tester reports, include:
 
 ## Releases
 
-Release steps are documented in [docs/RELEASING.md](docs/RELEASING.md).
+Releases are built locally on macOS and published as a `.dmg` via GitHub Releases:
+
+1. `./scripts/bump-version.sh X.Y.Z` — updates `package.json`, `src-tauri/tauri.conf.json`, and `src-tauri/Cargo.toml`, then commits the bump
+2. `./scripts/release-build.sh` — builds, signs, notarizes, and generates `latest.json`
+3. Smoke test the DMG, then `git tag vX.Y.Z && git push origin main vX.Y.Z`
+4. `gh release create` with the artifacts and release notes
 
 ## License
 
