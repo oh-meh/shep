@@ -2,7 +2,7 @@ import type { CodingAssistant } from "../../lib/types";
 
 export const CODING_ASSISTANTS: CodingAssistant[] = [
   { id: "claude", name: "Claude Code", command: "claude", yoloFlag: "--dangerously-skip-permissions", modelFlag: "--model" },
-  { id: "codex", name: "Codex", command: "codex", yoloFlag: "--full-auto", modelFlag: "--model" },
+  { id: "codex", name: "Codex", command: "codex", yoloFlag: "--yolo", modelFlag: "--model" },
   { id: "gemini", name: "Gemini", command: "gemini", yoloFlag: "--yolo", modelFlag: "--model" },
   { id: "opencode", name: "Open Code", command: "opencode", yoloFlag: null, modelFlag: "--model" },
   { id: "pi", name: "pi", command: "pi", yoloFlag: null, modelFlag: "--model" },
