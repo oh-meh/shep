@@ -19,7 +19,7 @@ Shep gives each repo a dedicated workspace for terminals, AI coding agents, comm
 ## What It Does
 
 - **Project workspaces** for repos, tasks, agents, and terminal tabs
-- **Assistant launcher** for Codex CLI, Claude Code, Gemini CLI, and Antigravity CLI
+- **Assistant launcher** for Codex CLI, Claude Code, and Antigravity CLI
 - **Git-aware project views** including discovered worktrees
 - **Autostart tasks** for dev servers, watchers, and recurring commands
 - **Status indicators** so crashed or noisy sessions are easy to spot
@@ -107,8 +107,9 @@ Supported today:
 
 - Codex CLI
 - Claude Code
-- Gemini CLI (deprecated by Google in favor of Antigravity CLI; stops serving consumer requests June 18, 2026)
 - Antigravity CLI (`agy`)
+
+Gemini CLI was removed from the launcher after Google deprecated it in favor of Antigravity CLI (consumer requests stop June 18, 2026). If you still use it (e.g. on an enterprise license), run `gemini` from any Shep terminal — historical Gemini usage stays visible in the usage panel.
 
 ## Build From Source
 
