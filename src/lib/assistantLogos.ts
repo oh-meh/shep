@@ -8,6 +8,8 @@ export const assistantLogoSrc: Record<string, string> = {
   claude: claudeSrc,
   codex: codexSrc,
   gemini: geminiSrc,
+  // Antigravity is Gemini CLI's successor; reuse the Gemini mark until an official asset lands
+  antigravity: geminiSrc,
   opencode: opencodeSrc,
   pi: piSrc,
 };
