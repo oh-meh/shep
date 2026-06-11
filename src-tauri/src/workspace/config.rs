@@ -56,6 +56,13 @@ pub struct ProjectSettings {
     pub show_agent_sessions_in_sidebar: bool,
     #[serde(default = "default_true", rename = "showTodos")]
     pub show_todos: bool,
+    /// Shape of a lazily created TODO.md: "kanban" (columned board) or "list".
+    #[serde(default = "default_todo_file_style", rename = "todoFileStyle")]
+    pub todo_file_style: String,
+}
+
+fn default_todo_file_style() -> String {
+    "kanban".to_string()
 }
 
 impl Default for ProjectSettings {
@@ -64,6 +71,7 @@ impl Default for ProjectSettings {
             auto_import_worktrees: true,
             show_agent_sessions_in_sidebar: true,
             show_todos: true,
+            todo_file_style: default_todo_file_style(),
         }
     }
 }

@@ -233,8 +233,28 @@ export function addTodo(
   repoPath: string,
   filePath: string | null,
   text: string,
+  sectionLine: number | null,
+  kanban: boolean,
 ): Promise<void> {
-  return invoke("add_todo", { repoPath, filePath, text });
+  return invoke("add_todo", { repoPath, filePath, text, sectionLine, kanban });
+}
+
+export function moveTodo(
+  filePath: string,
+  line: number,
+  expectedText: string,
+  targetSectionLine: number,
+  setChecked: boolean | null,
+): Promise<void> {
+  return invoke("move_todo", { filePath, line, expectedText, targetSectionLine, setChecked });
+}
+
+export function hasTodoSkill(repoPath: string): Promise<boolean> {
+  return invoke("has_todo_skill", { repoPath });
+}
+
+export function setupTodoSkill(repoPath: string): Promise<void> {
+  return invoke("setup_todo_skill", { repoPath });
 }
 
 export function gitListWorktrees(path: string): Promise<WorktreeEntry[]> {

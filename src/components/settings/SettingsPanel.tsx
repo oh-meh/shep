@@ -398,10 +398,18 @@ export default function SettingsPanel() {
           </button>
         </div>
 
-        <div className="settings-row !mb-0">
+        {projectIsSaving && <div className="mt-2 text-xs text-[var(--text-muted)]">Saving project settings...</div>}
+        {projectError && <div className="mt-2 text-sm text-red-300">{projectError}</div>}
+      </section>
+
+      {/* ── To-dos ─────────────────────────────────────────── */}
+      <section className="settings-section">
+        <h2 className="section-label !p-0 settings-section__header">To-dos</h2>
+
+        <div className="settings-row">
           <span className="settings-row__label flex items-center gap-2">
             <span>Project To-dos</span>
-            <InfoTip text="Shows a To-dos row in each project that surfaces any TODO.md in the repo as a shared checklist for you and your coding agents. Turning this off hides the row and stops scanning for todo files." />
+            <InfoTip text="Shows a To-dos row in each project that surfaces any TODO.md in the repo as a shared task list for you and your coding agents. Turning this off hides the row and stops scanning for todo files." />
           </span>
           <button
             onClick={() => {
@@ -418,8 +426,26 @@ export default function SettingsPanel() {
           </button>
         </div>
 
-        {projectIsSaving && <div className="mt-2 text-xs text-[var(--text-muted)]">Saving project settings...</div>}
-        {projectError && <div className="mt-2 text-sm text-red-300">{projectError}</div>}
+        <div className="settings-row !mb-0">
+          <span className="settings-row__label flex items-center gap-2">
+            <span>New File Style</span>
+            <InfoTip text="The shape Shep gives a TODO.md it creates for you (when you add your first to-do in a project). Kanban board starts with Backlog / In Progress / Done columns and renders as a board; Simple list is a flat checklist. Existing files are never reformatted." />
+          </span>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => void updateProjectSettings({ todoFileStyle: "kanban" })}
+              className={`option-card option-card--compact ${projectSettings.todoFileStyle === "kanban" ? "selected" : ""}`}
+            >
+              Kanban board
+            </button>
+            <button
+              onClick={() => void updateProjectSettings({ todoFileStyle: "list" })}
+              className={`option-card option-card--compact ${projectSettings.todoFileStyle === "list" ? "selected" : ""}`}
+            >
+              Simple list
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* ── Terminal ───────────────────────────────────────── */}
