@@ -285,8 +285,8 @@ export default function ProjectList({
             </CollapsibleSection>
 
             <CommandsRow badge={commandsBadge} />
-            <GitStatusRow repoPath={repo.path} />
             <TodoRow repoPath={repo.path} />
+            <GitStatusRow repoPath={repo.path} />
           </div>
         )}
       </div>
