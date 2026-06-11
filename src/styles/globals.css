@@ -1112,7 +1112,6 @@ select {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding-left: 18px;
 }
 
 .sidebar-section__overflow {
