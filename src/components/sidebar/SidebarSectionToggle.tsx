@@ -29,7 +29,7 @@ export default function SidebarSectionToggle({
       <span className="shrink-0 w-[14px] flex items-center justify-center" style={{ color: "var(--section-icon-color)" }}>
         {icon}
       </span>
-      <span className="truncate">{label}</span>
+      <span className="sidebar-section-toggle__label truncate">{label}</span>
       {badge != null && <span className="badge">{badge}</span>}
     </button>
   );

@@ -4,6 +4,7 @@ import type { RepoInfo, RepoGroup, CommandState } from "../../lib/types";
 import { useTerminalStore } from "../../stores/useTerminalStore";
 import { useCommandStore } from "../../stores/useCommandStore";
 import { useGitStore } from "../../stores/useGitStore";
+import { useProjectSettingsStore } from "../../stores/useProjectSettingsStore";
 import ProjectList from "./ProjectList";
 import SidebarFooter from "./SidebarFooter";
 import SidebarUsage from "./SidebarUsage";
@@ -58,15 +59,18 @@ export default function Sidebar({
   const projectCommands = useCommandStore((s) => s.projectCommands);
   const tabActivity = useTerminalStore((s) => s.tabActivity);
   const gitStatuses = useGitStore((s) => s.projectGitStatus);
+  const projectSettings = useProjectSettingsStore((s) => s.settings);
+  const projectSettingsLoaded = useProjectSettingsStore((s) => s.hasLoaded);
+  const loadProjectSettings = useProjectSettingsStore((s) => s.loadSettings);
 
-  // Only subscribe to the fields that affect the sidebar badges (bell, crash).
+  // Only subscribe to the fields that affect the sidebar activity indicators.
   // Returns a stable string so the selector doesn't trigger re-renders when
-  // unrelated tabActivity fields change (e.g. active toggling during streaming).
+  // unrelated tabActivity fields change.
   const activityKey = useTerminalStore((s) => {
     const parts: string[] = [];
     for (const [ptyId, a] of Object.entries(s.tabActivity)) {
-      if (a.bell || (!a.alive && a.exitCode !== 0)) {
-        parts.push(`${ptyId}:${a.bell ? "b" : ""}${!a.alive ? `x${a.exitCode}` : ""}`);
+      if (a.active || a.bell || !a.alive) {
+        parts.push(`${ptyId}:${a.active ? "a" : ""}${a.bell ? "b" : ""}${!a.alive ? `x${a.exitCode}` : ""}`);
       }
     }
     return parts.join(",");
@@ -74,26 +78,31 @@ export default function Sidebar({
 
   const projectActivity = useMemo(() => {
     const tabActivity = useTerminalStore.getState().tabActivity;
-    const activity: Record<string, { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean }> = {};
+    const activity: Record<string, { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean; hasActive: boolean }> = {};
     for (const repo of repos) {
       const ps = projectState[repo.path];
       const repoTabs = ps?.tabs ?? [];
       const cmds = projectCommands[repo.path] ?? [];
       let hasAttention = false;
       let hasCrash = false;
+      let hasActive = false;
+      let liveTerminalCount = 0;
       for (const tab of repoTabs) {
         if (tab.kind !== "terminal" && tab.kind !== "assistant") continue;
         const a = tabActivity[tab.ptyId];
         if (a) {
           if (a.bell) hasAttention = true;
+          if (a.active) hasActive = true;
           if (!a.alive && a.exitCode !== 0) hasCrash = true;
         }
+        if (!a || a.alive) liveTerminalCount += 1;
       }
       activity[repo.path] = {
-        terminalCount: repoTabs.filter((t) => t.kind === "terminal" || t.kind === "assistant").length,
+        terminalCount: liveTerminalCount,
         runningCount: cmds.filter((c) => c.status === "running").length,
         hasAttention,
         hasCrash,
+        hasActive,
       };
     }
     return activity;
@@ -142,18 +151,24 @@ export default function Sidebar({
   }, []);
 
   useEffect(() => {
+    if (!projectSettingsLoaded) void loadProjectSettings();
+  }, [projectSettingsLoaded, loadProjectSettings]);
+
+  useEffect(() => {
     window.localStorage.setItem(PROJECTS_COLLAPSED_STORAGE_KEY, String(projectsCollapsed));
   }, [projectsCollapsed]);
 
   return (
     <div className="w-72 shrink-0 flex flex-col h-full pr-4 mr-4 border-r border-[var(--glass-border)]" onContextMenu={(e) => e.preventDefault()}>
       <div className="flex-1 overflow-y-auto min-h-0">
-        <AgentSessionList
-          sessions={agentSessions}
-          activeRepoPath={activeRepoPath}
-          activeTabId={activeTabId}
-          onSelectSession={onSelectProjectTab}
-        />
+        {projectSettings.showAgentSessionsInSidebar && (
+          <AgentSessionList
+            sessions={agentSessions}
+            activeRepoPath={activeRepoPath}
+            activeTabId={activeTabId}
+            onSelectSession={onSelectProjectTab}
+          />
+        )}
         <div className="sidebar-section px-2 pb-2">
           <SidebarSectionToggle
             label="Projects"

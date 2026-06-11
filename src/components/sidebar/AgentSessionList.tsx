@@ -5,6 +5,7 @@ import { handleActionKey } from "../../lib/a11y";
 import { useTerminalStore } from "../../stores/useTerminalStore";
 import tabKindMeta from "../../lib/tabKindMeta";
 import SidebarSectionToggle from "./SidebarSectionToggle";
+import ActivityIndicator, { getTabActivityStatus } from "./ActivityIndicator";
 
 export interface AgentSessionItem {
   tab: TerminalTabData;
@@ -21,13 +22,6 @@ interface AgentSessionListProps {
 
 const MAX_VISIBLE_SESSIONS = 4;
 const COLLAPSED_STORAGE_KEY = "shep:sidebar-agent-sessions-collapsed";
-
-function dotClass(activity: TabActivity | undefined): string {
-  if (!activity) return "sidebar-status-dot--idle";
-  if (!activity.alive) return activity.exitCode === 0 ? "sidebar-status-dot--idle" : "sidebar-status-dot--exited";
-  if (activity.active) return "sidebar-status-dot--active";
-  return "sidebar-status-dot--idle";
-}
 
 function AgentSessionRow({
   item,
@@ -69,7 +63,11 @@ function AgentSessionRow({
         <span className="agent-session-row__project">{projectName}</span>
         {branchName && <span className="agent-session-row__branch">{branchName}</span>}
       </span>
-      <span className={`sidebar-status-dot agent-session-row__dot ${dotClass(activity)}`} />
+      <ActivityIndicator
+        status={getTabActivityStatus(activity)}
+        activity={activity}
+        className="agent-session-row__indicator"
+      />
     </div>
   );
 }

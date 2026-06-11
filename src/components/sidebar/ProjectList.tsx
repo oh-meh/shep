@@ -21,7 +21,7 @@ interface ProjectListProps {
   activeRepoPath: string | null;
   activeTabId: string | null;
   commands: CommandState[];
-  projectActivity: Record<string, { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean }>;
+  projectActivity: Record<string, { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean; hasActive: boolean }>;
   onSelectRepo: (repoPath: string) => void;
   onAddProject: (repoPath: string) => Promise<void>;
   onRemoveProject: (repoPath: string) => void;
@@ -206,21 +206,23 @@ export default function ProjectList({
   }, [repos, groups, gitStatuses]);
 
   const groupActivity = useMemo(() => {
-    const result: Record<string, { hasAttention: boolean; hasCrash: boolean; hasActivity: boolean }> = {};
+    const result: Record<string, { hasAttention: boolean; hasCrash: boolean; hasActivity: boolean; hasActive: boolean }> = {};
     for (const group of sortedGroups) {
       const groupRepos = groupedRepos.get(group.id) ?? [];
       let hasAttention = false;
       let hasCrash = false;
       let hasActivity = false;
+      let hasActive = false;
       for (const repo of groupRepos) {
         const a = projectActivity[repo.path];
         if (a) {
           if (a.terminalCount > 0 || a.runningCount > 0) hasActivity = true;
           if (a.hasAttention) hasAttention = true;
           if (a.hasCrash) hasCrash = true;
+          if (a.hasActive) hasActive = true;
         }
       }
-      result[group.id] = { hasAttention, hasCrash, hasActivity };
+      result[group.id] = { hasAttention, hasCrash, hasActivity, hasActive };
     }
     return result;
   }, [sortedGroups, groupedRepos, projectActivity]);

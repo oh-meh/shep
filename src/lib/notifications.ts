@@ -33,7 +33,7 @@ async function ensureNotificationPermission() {
 }
 
 export async function notifyAgent(ptyId: number, message: string) {
-  useTerminalStore.getState().setTabBell(ptyId);
+  useTerminalStore.getState().setTabBell(ptyId, message);
 
   if (focused) {
     return;

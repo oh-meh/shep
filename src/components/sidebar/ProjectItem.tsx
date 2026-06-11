@@ -19,12 +19,13 @@ import { useNoticeStore } from "../../stores/useNoticeStore";
 import { getErrorMessage } from "../../lib/errors";
 import { handleActionKey } from "../../lib/a11y";
 import { gitCreateWorktree, revealInFinder } from "../../lib/tauri";
+import ActivityIndicator, { getAggregateActivityStatus } from "./ActivityIndicator";
 
 interface ProjectItemProps {
   repo: RepoInfo;
   isActive: boolean;
   isExpanded: boolean;
-  activity?: { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean };
+  activity?: { terminalCount: number; runningCount: number; hasAttention: boolean; hasCrash: boolean; hasActive: boolean };
   worktreeParent?: string | null;
   groups: RepoGroup[];
   onClick: () => void;
@@ -49,12 +50,12 @@ export default function ProjectItem({
   onMoveToGroup,
   onNewGroupForRepo,
 }: ProjectItemProps) {
-  const hasActivity = activity && (activity.terminalCount > 0 || activity.runningCount > 0);
-  const dotColor = activity?.hasCrash
-    ? "var(--status-crashed)"
-    : activity?.hasAttention
-      ? "var(--status-attention)"
-      : "var(--status-running)";
+  const activityStatus = getAggregateActivityStatus({
+    hasCrash: activity?.hasCrash,
+    hasAttention: activity?.hasAttention,
+    hasActive: activity?.hasActive,
+    hasRunning: Boolean(activity && (activity.terminalCount > 0 || activity.runningCount > 0)),
+  });
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const preferredEditor = useEditorStore((s) => s.settings.preferredEditor);
   const pushNotice = useNoticeStore((s) => s.pushNotice);
@@ -242,8 +243,8 @@ export default function ProjectItem({
           {worktreeParent ? `${worktreeParent} > ${repo.name}` : repo.name}
         </span>
         <span className="flex-1" />
-        {!isExpanded && hasActivity && (
-          <span className="sidebar-status-dot" style={{ background: dotColor }} />
+        {!isExpanded && activityStatus && (
+          <ActivityIndicator status={activityStatus} />
         )}
       </div>
       {menu && createPortal(

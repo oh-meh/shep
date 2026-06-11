@@ -6,19 +6,13 @@ import { useTerminalStore } from "../../stores/useTerminalStore";
 import { handleActionKey } from "../../lib/a11y";
 import ContextMenu from "../shared/ContextMenu";
 import type { ContextMenuItem } from "../shared/ContextMenu";
+import ActivityIndicator, { getTabActivityStatus } from "./ActivityIndicator";
 
 interface TerminalItemProps {
   tab: TerminalTabData;
   isActive: boolean;
   onClick: () => void;
   onClose: () => void;
-}
-
-function dotClass(activity: TabActivity | undefined): string {
-  if (!activity) return "sidebar-status-dot--idle";
-  if (!activity.alive) return activity.exitCode === 0 ? "sidebar-status-dot--idle" : "sidebar-status-dot--exited";
-  if (activity.active) return "sidebar-status-dot--active";
-  return "sidebar-status-dot--idle";
 }
 
 export default function TerminalItem({
@@ -58,7 +52,7 @@ export default function TerminalItem({
       >
         <span className="shrink-0">{tabKindMeta.terminal.icon(14)}</span>
         <span className="min-w-0 truncate text-left">{tab.label}</span>
-        <span className={`sidebar-status-dot ${dotClass(activity)}`} />
+        <ActivityIndicator status={getTabActivityStatus(activity)} activity={activity} />
       </div>
       {menu && (
         <ContextMenu x={menu.x} y={menu.y} items={menuItems} onClose={() => setMenu(null)} />

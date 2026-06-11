@@ -27,7 +27,7 @@ interface TerminalStore {
   initActivity: (ptyId: number) => void;
   setTabActive: (ptyId: number, active: boolean) => void;
   setTabExited: (ptyId: number, exitCode: number) => void;
-  setTabBell: (ptyId: number) => void;
+  setTabBell: (ptyId: number, message?: string) => void;
   clearTabBell: (ptyId: number) => void;
   removeActivity: (ptyId: number) => void;
   getAllProjectTabs: (repoPath: string) => UnifiedTab[];
@@ -260,7 +260,15 @@ export const useTerminalStore = create<TerminalStore>((set, get) => ({
     set((state) => ({
       tabActivity: {
         ...state.tabActivity,
-        [ptyId]: { alive: true, active: true, exitCode: null, bell: false },
+        [ptyId]: {
+          alive: true,
+          active: true,
+          exitCode: null,
+          bell: false,
+          lastOutputAt: Date.now(),
+          lastAttentionAt: null,
+          lastNotificationMessage: null,
+        },
       },
     }));
   },
@@ -269,7 +277,16 @@ export const useTerminalStore = create<TerminalStore>((set, get) => ({
     set((state) => {
       const prev = state.tabActivity[ptyId];
       if (!prev || prev.active === active) return state;
-      return { tabActivity: { ...state.tabActivity, [ptyId]: { ...prev, active } } };
+      return {
+        tabActivity: {
+          ...state.tabActivity,
+          [ptyId]: {
+            ...prev,
+            active,
+            lastOutputAt: active ? Date.now() : prev.lastOutputAt,
+          },
+        },
+      };
     });
   },
 
@@ -281,11 +298,21 @@ export const useTerminalStore = create<TerminalStore>((set, get) => ({
     });
   },
 
-  setTabBell: (ptyId: number) => {
+  setTabBell: (ptyId: number, message?: string) => {
     set((state) => {
       const prev = state.tabActivity[ptyId];
       if (!prev) return state;
-      return { tabActivity: { ...state.tabActivity, [ptyId]: { ...prev, bell: true } } };
+      return {
+        tabActivity: {
+          ...state.tabActivity,
+          [ptyId]: {
+            ...prev,
+            bell: true,
+            lastAttentionAt: Date.now(),
+            lastNotificationMessage: message?.trim() || prev.lastNotificationMessage,
+          },
+        },
+      };
     });
   },
 

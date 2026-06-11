@@ -39,6 +39,7 @@ export interface EditorSettings {
 
 export interface ProjectSettings {
   autoImportWorktrees: boolean;
+  showAgentSessionsInSidebar: boolean;
 }
 
 export interface KeybindingSettings {
@@ -134,6 +135,9 @@ export interface TabActivity {
   active: boolean;
   exitCode: number | null;
   bell: boolean;
+  lastOutputAt: number | null;
+  lastAttentionAt: number | null;
+  lastNotificationMessage: string | null;
 }
 
 // ── Coding assistants ───────────────────────────────────────────────

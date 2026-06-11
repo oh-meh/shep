@@ -52,12 +52,15 @@ pub struct EditorSettings {
 pub struct ProjectSettings {
     #[serde(default = "default_true", rename = "autoImportWorktrees")]
     pub auto_import_worktrees: bool,
+    #[serde(default = "default_true", rename = "showAgentSessionsInSidebar")]
+    pub show_agent_sessions_in_sidebar: bool,
 }
 
 impl Default for ProjectSettings {
     fn default() -> Self {
         ProjectSettings {
             auto_import_worktrees: true,
+            show_agent_sessions_in_sidebar: true,
         }
     }
 }

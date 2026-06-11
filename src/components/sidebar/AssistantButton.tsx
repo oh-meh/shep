@@ -6,19 +6,13 @@ import { handleActionKey } from "../../lib/a11y";
 import { X } from "lucide-react";
 import ContextMenu from "../shared/ContextMenu";
 import type { ContextMenuItem } from "../shared/ContextMenu";
+import ActivityIndicator, { getTabActivityStatus } from "./ActivityIndicator";
 
 interface AssistantButtonProps {
   tab: TerminalTabData;
   isActive: boolean;
   onClick: () => void;
   onClose: () => void;
-}
-
-function dotClass(activity: TabActivity | undefined): string {
-  if (!activity) return "sidebar-status-dot--idle";
-  if (!activity.alive) return activity.exitCode === 0 ? "sidebar-status-dot--idle" : "sidebar-status-dot--exited";
-  if (activity.active) return "sidebar-status-dot--active";
-  return "sidebar-status-dot--idle";
 }
 
 export default function AssistantButton({
@@ -60,7 +54,7 @@ export default function AssistantButton({
       >
         {logoUrl && <img src={logoUrl} alt="" width={14} height={14} className={tab.assistantId ? getAssistantLogoClass(tab.assistantId) : undefined} />}
         <span className="truncate text-left">{tab.label}</span>
-        <span className={`sidebar-status-dot ${dotClass(activity)}`} />
+        <ActivityIndicator status={getTabActivityStatus(activity)} activity={activity} />
       </div>
       {menu && (
         <ContextMenu x={menu.x} y={menu.y} items={menuItems} onClose={() => setMenu(null)} />

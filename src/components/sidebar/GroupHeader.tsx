@@ -4,11 +4,12 @@ import { createPortal } from "react-dom";
 import ContextMenu from "../shared/ContextMenu";
 import type { ContextMenuItem } from "../shared/ContextMenu";
 import type { RepoGroup } from "../../lib/types";
+import ActivityIndicator, { getAggregateActivityStatus } from "./ActivityIndicator";
 
 interface GroupHeaderProps {
   group: RepoGroup;
   isExpanded: boolean;
-  activity?: { hasAttention: boolean; hasCrash: boolean; hasActivity: boolean };
+  activity?: { hasAttention: boolean; hasCrash: boolean; hasActivity: boolean; hasActive: boolean };
   onToggle: () => void;
   onRename: (groupId: string, newName: string) => void;
   onDelete: (groupId: string) => void;
@@ -22,12 +23,12 @@ export default function GroupHeader({
   onRename,
   onDelete,
 }: GroupHeaderProps) {
-  const hasActivity = activity?.hasActivity ?? false;
-  const dotColor = activity?.hasCrash
-    ? "var(--status-crashed)"
-    : activity?.hasAttention
-      ? "var(--status-attention)"
-      : "var(--status-running)";
+  const activityStatus = getAggregateActivityStatus({
+    hasCrash: activity?.hasCrash,
+    hasAttention: activity?.hasAttention,
+    hasActive: activity?.hasActive,
+    hasRunning: activity?.hasActivity,
+  });
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState(group.name);
@@ -120,8 +121,8 @@ export default function GroupHeader({
           <span className="group-header__name truncate">{group.name}</span>
         )}
         <span className="flex-1" />
-        {!isExpanded && hasActivity && (
-          <span className="sidebar-status-dot" style={{ background: dotColor }} />
+        {!isExpanded && activityStatus && (
+          <ActivityIndicator status={activityStatus} />
         )}
       </div>
       {menu &&
