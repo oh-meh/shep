@@ -47,3 +47,9 @@ is no other task database.
 6. If the user asks to reshape the board (new columns, renames, reordering),
    do it — it's their board. Just keep the invariants: `##` headings as
    columns, one `- [ ]` line per card, checked only in the done-like column.
+7. **Before ending a session, make the board reflect reality.** Finished →
+   move to Done. Stopped midway or waiting on the user → leave the card in
+   In Progress and add a child line noting where things stand (e.g.
+   `- [ ] PR #62 open, needs merge + deploy`). The next session — yours or
+   another agent's — starts by reading this board, so an accurate In Progress
+   column is the handoff note.
