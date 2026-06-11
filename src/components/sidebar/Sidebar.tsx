@@ -10,8 +10,6 @@ import SidebarUsage from "./SidebarUsage";
 import AgentSessionList, { type AgentSessionItem } from "./AgentSessionList";
 import SidebarSectionToggle from "./SidebarSectionToggle";
 
-const PROJECTS_COLLAPSED_STORAGE_KEY = "shep:sidebar-projects-collapsed";
-
 interface SidebarProps {
   repos: RepoInfo[];
   groups: RepoGroup[];
@@ -51,9 +49,8 @@ export default function Sidebar({
   onDeleteGroup,
   onMoveToGroup,
 }: SidebarProps) {
-  const [projectsCollapsed, setProjectsCollapsed] = useState(
-    () => window.localStorage.getItem(PROJECTS_COLLAPSED_STORAGE_KEY) === "true",
-  );
+  // Projects always starts expanded on launch; collapsing is per-session only.
+  const [projectsCollapsed, setProjectsCollapsed] = useState(false);
   const projectState = useTerminalStore((s) => s.projectState);
   const projectCommands = useCommandStore((s) => s.projectCommands);
   const tabActivity = useTerminalStore((s) => s.tabActivity);
@@ -152,10 +149,6 @@ export default function Sidebar({
   useEffect(() => {
     if (!projectSettingsLoaded) void loadProjectSettings();
   }, [projectSettingsLoaded, loadProjectSettings]);
-
-  useEffect(() => {
-    window.localStorage.setItem(PROJECTS_COLLAPSED_STORAGE_KEY, String(projectsCollapsed));
-  }, [projectsCollapsed]);
 
   return (
     <div className="w-72 shrink-0 flex flex-col h-full pr-4 mr-4 border-r border-[var(--glass-border)]" onContextMenu={(e) => e.preventDefault()}>
