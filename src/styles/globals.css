@@ -1071,9 +1071,41 @@ select {
   padding-top: 6px;
 }
 
+/* Hairline divider between adjacent top-level sections (e.g. Agent
+   Sessions → Projects). Only applies when both are rendered. */
+.sidebar-section + .sidebar-section {
+  margin-top: 6px;
+  border-top: 1px solid var(--glass-border);
+  padding-top: 10px;
+}
+
+/* Top-level section headers are typographic labels, distinct from the
+   icon-led item rows nested beneath them. */
+.sidebar-section-toggle {
+  min-height: 24px;
+  padding: 3px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
 .sidebar-section-toggle__label {
   min-width: 0;
   flex: 1;
+  text-align: left;
+}
+
+.sidebar-section-toggle__chevron {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.45;
+  transition: opacity 120ms ease;
+}
+
+.sidebar-section-toggle:hover .sidebar-section-toggle__chevron {
+  opacity: 0.9;
 }
 
 .sidebar-section__list {

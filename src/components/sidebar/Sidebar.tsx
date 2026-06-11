@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Folder } from "lucide-react";
 import type { RepoInfo, RepoGroup, CommandState } from "../../lib/types";
 import { useTerminalStore } from "../../stores/useTerminalStore";
 import { useCommandStore } from "../../stores/useCommandStore";
@@ -172,7 +171,6 @@ export default function Sidebar({
         <div className="sidebar-section px-2 pb-2">
           <SidebarSectionToggle
             label="Projects"
-            icon={<Folder size={14} />}
             collapsed={projectsCollapsed}
             badge={repos.length}
             onToggle={handleToggleProjects}

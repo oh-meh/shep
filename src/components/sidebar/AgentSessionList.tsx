@@ -98,7 +98,6 @@ export default function AgentSessionList({
     <div className="sidebar-section px-2 pb-1">
       <SidebarSectionToggle
         label="Agent Sessions"
-        icon={tabKindMeta.assistant.icon(14)}
         collapsed={collapsed}
         badge={sessions.length}
         onToggle={handleToggle}
