@@ -474,8 +474,35 @@ pub fn toggle_todo(
 }
 
 #[tauri::command]
-pub fn add_todo(repo_path: &str, file_path: Option<&str>, text: &str) -> Result<(), String> {
-    todos::add_todo(repo_path, file_path, text)
+pub fn add_todo(
+    repo_path: &str,
+    file_path: Option<&str>,
+    text: &str,
+    section_line: Option<usize>,
+    kanban: bool,
+) -> Result<(), String> {
+    todos::add_todo(repo_path, file_path, text, section_line, kanban)
+}
+
+#[tauri::command]
+pub fn move_todo(
+    file_path: &str,
+    line: usize,
+    expected_text: &str,
+    target_section_line: usize,
+    set_checked: Option<bool>,
+) -> Result<(), String> {
+    todos::move_todo(file_path, line, expected_text, target_section_line, set_checked)
+}
+
+#[tauri::command]
+pub fn has_todo_skill(repo_path: &str) -> bool {
+    todos::has_todo_skill(repo_path)
+}
+
+#[tauri::command]
+pub fn setup_todo_skill(repo_path: &str) -> Result<(), String> {
+    todos::setup_todo_skill(repo_path)
 }
 
 #[tauri::command]
